@@ -118,7 +118,7 @@ def get_summary(result: arxiv.Result) -> str:
         Message(role="user", content=text),
     ]
     response = llm_client.chat.completions.create(
-        model="gemini-2.0-flash-exp",
+        model="gemini-2.5-flash",
         n=1,
         messages=[message.cast_to_openai_schema() for message in prompt],
     )
