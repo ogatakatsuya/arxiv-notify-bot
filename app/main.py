@@ -1,5 +1,6 @@
 import logging
 import json
+from datetime import datetime
 
 import arxiv
 from openai import OpenAI
@@ -79,6 +80,20 @@ def handler(event: dict, context: LambdaContext) -> dict[str, object]:
                 }
             ),
         }
+
+    # 週の開始メッセージを送信
+    today = datetime.now()
+    week_start_message = f"""📚 今週の論文通知を開始します
+{'=' * 50}
+日付: {today.strftime('%Y年%m月%d日 (%A)')}
+検索クエリ: {env.ARXIV_QUERY}
+見つかった論文数: {len(result_list)}件
+{'=' * 50}"""
+    
+    slack_client.chat_postMessage(
+        channel=env.SLACK_CHANNEL,
+        text=week_start_message
+    )
 
     for i, result in enumerate(result_list, start=1):
         try:
